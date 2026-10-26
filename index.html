@@ -99,6 +99,47 @@
             100% { transform: scale(1.06); filter: brightness(1.25); }
         }
         .reel-winning { animation: winFlash .7s ease; z-index: 25; }
+
+        /* ===== ТАПАЛКА ===== */
+        @keyframes floatUp {
+            0%   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -90px) scale(1.35); }
+        }
+        .float-coin {
+            position: absolute;
+            font-weight: 900;
+            font-size: 1.15rem;
+            color: #fde047;
+            text-shadow: 0 2px 8px rgba(0,0,0,.7), 0 0 14px rgba(253,224,71,.4);
+            pointer-events: none;
+            animation: floatUp .8s ease-out forwards;
+            z-index: 40;
+            white-space: nowrap;
+        }
+        @keyframes coinPop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(.93); }
+            100% { transform: scale(1); }
+        }
+        .coin-pop { animation: coinPop .15s ease; }
+        @keyframes coinShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-7px); }
+            75% { transform: translateX(7px); }
+        }
+        .coin-shake { animation: coinShake .3s ease; }
+        .coin-btn { transition: transform .15s ease, box-shadow .3s ease; }
+        .coin-btn.coin-active {
+            box-shadow: 0 0 0 3px #fbbf24, 0 10px 30px rgba(245, 158, 11, .65) !important;
+        }
+        #tapCoin {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        #tapCoin:active { filter: brightness(1.08); }
     </style>
 </head>
 <body class="h-full flex flex-col font-sans antialiased selection:bg-rose-500 selection:text-slate-950 pb-28">
@@ -114,12 +155,16 @@
                     <h1 class="text-lg font-bold tracking-wider uppercase bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 bg-clip-text text-transparent">
                         Рулетка с Евой🌸
                     </h1>
-                    <p class="text-xs text-slate-400 font-medium">Открывай кейсы и собирай гифки</p>
+                    <p class="text-xs text-slate-400 font-medium">Тапай, открывай кейсы и собирай гифки</p>
                 </div>
             </div>
 
-            <!-- Sound Control -->
-            <div class="flex items-center space-x-3 sm:space-x-6">
+            <!-- Wallet + Sound Control -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 border border-amber-500/40 shadow-inner">
+                    <span class="text-sm">⭐</span>
+                    <span id="headerCoins" class="text-sm font-black text-amber-300 tabular-nums">0</span>
+                </div>
                 <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-2 text-xs font-semibold border border-slate-700">
                     <i id="soundIcon" class="fa-solid fa-volume-high text-rose-400"></i>
                     <span id="soundText" class="hidden sm:inline">Звук: ВКЛ</span>
@@ -251,6 +296,115 @@
             </div>
         </section>
 
+        <!-- ============ ВКЛАДКА: ТАПАЛКА (МОНЕТКА) ============ -->
+        <section id="tab-tap" class="hidden">
+            <div class="flex flex-col gap-5">
+
+                <!-- Баланс -->
+                <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm text-center relative overflow-hidden">
+                    <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="text-[11px] uppercase tracking-widest text-slate-500 font-bold mb-1">Баланс Евы</div>
+                        <div class="text-4xl sm:text-5xl font-black text-amber-300 tabular-nums flex items-center justify-center gap-2">
+                            <span>⭐</span><span id="tapBalance">0</span>
+                        </div>
+                        <div id="tapRates" class="text-xs text-slate-400 font-semibold mt-2">+1⭐ за клик · бот +0⭐/мин</div>
+                    </div>
+                </div>
+
+                <!-- Монета -->
+                <div class="flex justify-center py-2">
+                    <div class="relative inline-block">
+                        <button id="tapCoin" class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full select-none overflow-hidden"
+                            style="background: radial-gradient(circle at 35% 30%, #fef3c7, #fcd34d 30%, #f59e0b 62%, #b45309 100%); box-shadow: 0 12px 40px rgba(245,158,11,.35), inset 0 -6px 18px rgba(120,53,15,.5), inset 0 4px 12px rgba(255,255,255,.4); border: 6px solid #92400e;">
+                            <!-- Если положишь картинку media/coin.png — она станет лицом монеты -->
+                            <img id="coinImg" src="media/coin.png" alt=""
+                                 class="absolute inset-0 w-full h-full object-cover rounded-full"
+                                 onerror="this.style.display='none'; document.getElementById('coinFallback').classList.remove('hidden');">
+                            <!-- CSS-заглушка монеты (пока нет coin.png) -->
+                            <div id="coinFallback" class="hidden absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-[10px] font-black tracking-[0.35em] text-amber-900/80 uppercase mb-1">Ева</span>
+                                <div class="relative leading-none">
+                                    <span class="text-6xl sm:text-7xl">🐕</span>
+                                    <span class="absolute -top-1 -right-2 text-xl">🎀</span>
+                                </div>
+                                <span class="text-[10px] font-black tracking-[0.35em] text-amber-900/80 uppercase mt-1">Coin</span>
+                            </div>
+                            <!-- Внутреннее кольцо -->
+                            <div class="absolute inset-3 rounded-full border-2 border-amber-200/40 pointer-events-none"></div>
+                        </button>
+                        <div id="floatLayer" class="absolute inset-0 pointer-events-none z-40"></div>
+                    </div>
+                </div>
+
+                <!-- Энергия -->
+                <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-4 sm:p-5 shadow-xl backdrop-blur-sm">
+                    <div class="flex justify-between items-center text-xs font-bold mb-2">
+                        <span class="text-sky-300"><i class="fa-solid fa-bolt mr-1.5"></i>Энергия</span>
+                        <span id="energyText" class="text-slate-400 tabular-nums">50 / 50⚡</span>
+                    </div>
+                    <div class="h-3 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="energyBar" class="h-full bg-gradient-to-r from-sky-500 via-cyan-400 to-sky-300 rounded-full transition-all duration-300" style="width:100%"></div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-2 font-semibold">Энергия полностью восстанавливается за 20 минут — даже когда приложение закрыто.</p>
+                </div>
+
+                <!-- Улучшения -->
+                <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                    <h2 class="text-lg font-extrabold text-slate-100 flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-arrow-trend-up text-rose-400"></i>
+                        Улучшения
+                    </h2>
+
+                    <div class="flex flex-col gap-3">
+                        <!-- Сила клика -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-hand-pointer text-amber-300 text-lg"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-extrabold text-slate-200">Сила клика <span id="tapLvl" class="text-amber-300">Ур. 1</span></div>
+                                    <div id="tapEffect" class="text-[11px] text-slate-500 font-semibold">+1⭐ за клик</div>
+                                </div>
+                            </div>
+                            <button id="tapBuyBtn" onclick="buyUpgrade('tap')" class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-xs font-black uppercase transition active:scale-95 whitespace-nowrap">100⭐</button>
+                        </div>
+
+                        <!-- Максимум энергии -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-battery-three-quarters text-sky-300 text-lg"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-extrabold text-slate-200">Запас энергии <span id="energyLvl" class="text-sky-300">Ур. 0</span></div>
+                                    <div id="energyEffect" class="text-[11px] text-slate-500 font-semibold">Максимум: 50⚡</div>
+                                </div>
+                            </div>
+                            <button id="energyBuyBtn" onclick="buyUpgrade('energy')" class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 text-slate-950 text-xs font-black uppercase transition active:scale-95 whitespace-nowrap">80⭐</button>
+                        </div>
+
+                        <!-- Бот-кликер -->
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-robot text-emerald-300 text-lg"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-extrabold text-slate-200">Бот-кликер <span id="botLvl" class="text-emerald-300">Ур. 0</span></div>
+                                    <div id="botEffect" class="text-[11px] text-slate-500 font-semibold">Купи бота — кликает сам: +1⭐/мин</div>
+                                </div>
+                            </div>
+                            <button id="botBuyBtn" onclick="buyUpgrade('bot')" class="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-xs font-black uppercase transition active:scale-95 whitespace-nowrap">500⭐</button>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-slate-500 mt-4 font-semibold text-center">🤖 Бот кликает даже когда ты спишь. Монеты скоро можно будет тратить на кейсы!</p>
+                </div>
+            </div>
+        </section>
+
         <!-- ============ ВКЛАДКА: СТАТИСТИКА ============ -->
         <section id="tab-stats" class="hidden">
             <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
@@ -368,8 +522,9 @@
                         О приложении
                     </h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Рулетка с Евой🌸 v2.0 — мини-апп для Telegram. Открывай кейсы, собирай все 6 гифок в инвентарь
-                        и следи за статистикой. Прогресс, инвентарь и настройка звука сохраняются на устройстве.
+                        Рулетка с Евой🌸 v2.1 — мини-апп для Telegram. Тапай монетку с Евой, прокачивай клик,
+                        энергию и бота-кликера. Открывай кейсы, собирай все 6 гифок в инвентарь и следи за статистикой.
+                        Прогресс, монеты и настройки сохраняются на устройстве.
                     </p>
                 </div>
             </div>
@@ -377,7 +532,7 @@
     </main>
 
     <!-- ============ НИЖНЯЯ НАВИГАЦИЯ ============ -->
-    <nav class="tabbar fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 grid grid-cols-4">
+    <nav class="tabbar fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 grid grid-cols-5 items-end">
         <button id="nav-cases" onclick="switchTab('cases')" class="tab-btn tab-active py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-gift text-lg"></i>
             <span class="text-[10px] font-bold uppercase tracking-wider">Кейсы</span>
@@ -386,6 +541,14 @@
             <i class="fa-solid fa-boxes-stacked text-lg"></i>
             <span class="text-[10px] font-bold uppercase tracking-wider">Инвентарь</span>
         </button>
+        <!-- Центральная монетка -->
+        <div class="relative flex items-start justify-center">
+            <button id="nav-tap" onclick="switchTab('tap')" aria-label="Тапалка"
+                class="coin-btn -mt-9 w-16 h-16 rounded-full flex items-center justify-center text-3xl select-none border-4 border-slate-900"
+                style="background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 55%, #b45309); box-shadow: 0 8px 24px rgba(245,158,11,.45);">
+                🐕
+            </button>
+        </div>
         <button id="nav-stats" onclick="switchTab('stats')" class="tab-btn py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-chart-column text-lg"></i>
             <span class="text-[10px] font-bold uppercase tracking-wider">Статистика</span>
@@ -433,7 +596,7 @@
     <!-- AUDIO SYNTHESIS & LOGIC SCRIPT -->
     <script>
         // ==================== ДАННЫЕ РЕДКОСТЕЙ ====================
-        // ВАЖНО: веса теперь в сумме дают ровно 100 (50+25+15+10),
+        // ВАЖНО: веса в сумме дают ровно 100 (50+25+15+10),
         // чтобы реальные шансы совпадали с тем, что написано в UI.
         const RARITIES = {
             consumer: {
@@ -487,7 +650,9 @@
         const STORAGE_KEYS = {
             inv: 'evaInventory_v1',
             stats: 'evaStats_v1',
-            muted: 'evaMuted_v1'
+            muted: 'evaMuted_v1',
+            wallet: 'evaWallet_v1',
+            upg: 'evaUpgrades_v1'
         };
         const PITY_LIMIT = 20; // каждое 20-е открытие без легендарной = гарантированная легендарная
 
@@ -532,6 +697,192 @@
                 localStorage.setItem(STORAGE_KEYS.inv, JSON.stringify(inventory));
                 localStorage.setItem(STORAGE_KEYS.stats, JSON.stringify(stats));
             } catch (e) { console.error(e); }
+        }
+
+        // ==================== КОШЕЛЁК И ТАПАЛКА ====================
+        const ENERGY_FULL_MINUTES = 20; // полная энергия восстанавливается за 20 минут (можно 15-25)
+        const OFFLINE_CAP_MIN = 180;    // бот работает офлайн максимум 3 часа
+
+        let wallet = { coins: 0, energy: 50, lastSeen: Date.now() };
+        let upg = { tap: 1, energy: 0, bot: 0 }; // tap = монет за клик, energy = +25 к максимуму, bot = +1⭐/мин
+
+        function maxEnergy() { return 50 + upg.energy * 25; }
+        function perTap() { return upg.tap; }
+        function botPerMin() { return upg.bot; }
+
+        function upgradeCost(type) {
+            if (type === 'tap')    return Math.round(100 * Math.pow(1.8, upg.tap - 1) / 10) * 10;
+            if (type === 'energy') return Math.round(80  * Math.pow(1.8, upg.energy) / 10) * 10;
+            if (type === 'bot')    return Math.round(500 * Math.pow(2, upg.bot) / 10) * 10;
+            return 0;
+        }
+
+        function loadWallet() {
+            const w = loadJSON(STORAGE_KEYS.wallet, null);
+            if (w && typeof w === 'object') {
+                wallet = Object.assign({ coins: 0, energy: 50, lastSeen: Date.now() }, w);
+            }
+            const u = loadJSON(STORAGE_KEYS.upg, null);
+            if (u && typeof u === 'object') {
+                upg = Object.assign({ tap: 1, energy: 0, bot: 0 }, u);
+                upg.tap = Math.max(1, parseInt(upg.tap) || 1);
+                upg.energy = Math.max(0, parseInt(upg.energy) || 0);
+                upg.bot = Math.max(0, parseInt(upg.bot) || 0);
+            }
+        }
+
+        function saveWallet() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.wallet, JSON.stringify(wallet));
+                localStorage.setItem(STORAGE_KEYS.upg, JSON.stringify(upg));
+            } catch (e) { console.error(e); }
+        }
+
+        // Начисление офлайн-дохода: энергия и бот копятся, пока приложение закрыто
+        function tickEconomy(announce) {
+            const now = Date.now();
+            const minutes = Math.max(0, (now - wallet.lastSeen) / 60000);
+            const counted = Math.min(minutes, OFFLINE_CAP_MIN);
+
+            // Бот: +N⭐ за каждую минуту (даже офлайн)
+            const botCoins = Math.floor(counted) * botPerMin();
+
+            // Энергия: равномерная регенерация, полный бар за ENERGY_FULL_MINUTES
+            const m = maxEnergy();
+            const addEnergy = Math.min(m - wallet.energy, counted * (m / ENERGY_FULL_MINUTES));
+            if (addEnergy > 0) wallet.energy = Math.min(m, wallet.energy + addEnergy);
+
+            if (botCoins > 0) wallet.coins += botCoins;
+            wallet.lastSeen = now;
+
+            if (announce && minutes > 2 && (botCoins > 0 || Math.floor(addEnergy) > 0)) {
+                const parts = [];
+                if (botCoins > 0) parts.push(`бот принёс +${botCoins}⭐`);
+                if (Math.floor(addEnergy) > 0) parts.push(`+${Math.floor(addEnergy)}⚡ энергии`);
+                showToast('⏰ Пока тебя не было: ' + parts.join(', '));
+            }
+
+            saveWallet();
+            updateWalletUI();
+        }
+
+        function fmtCoins(n) { return Math.floor(n).toLocaleString('ru-RU'); }
+
+        function updateWalletUI() {
+            const header = document.getElementById('headerCoins');
+            if (header) header.innerText = fmtCoins(wallet.coins);
+
+            const balance = document.getElementById('tapBalance');
+            if (balance) balance.innerText = fmtCoins(wallet.coins);
+
+            const rates = document.getElementById('tapRates');
+            if (rates) rates.innerText = `+${perTap()}⭐ за клик · бот +${botPerMin()}⭐/мин`;
+
+            // Энергия
+            const m = maxEnergy();
+            const en = Math.max(0, Math.min(m, wallet.energy));
+            const bar = document.getElementById('energyBar');
+            const txt = document.getElementById('energyText');
+            if (bar) bar.style.width = (en / m * 100) + '%';
+            if (txt) txt.innerText = `${Math.floor(en)} / ${m}⚡`;
+
+            // Улучшения
+            const setText = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            setText('tapLvl', `Ур. ${upg.tap}`);
+            setText('tapEffect', `+${perTap()}⭐ за клик`);
+            setText('energyLvl', `Ур. ${upg.energy}`);
+            setText('energyEffect', `Максимум: ${m}⚡`);
+            setText('botLvl', `Ур. ${upg.bot}`);
+            setText('botEffect', upg.bot === 0 ? 'Купи бота — кликает сам: +1⭐/мин' : `Кликает сам: +${botPerMin()}⭐/мин`);
+
+            const setBtn = (id, type) => {
+                const btn = document.getElementById(id);
+                if (!btn) return;
+                const cost = upgradeCost(type);
+                btn.innerText = fmtCoins(cost) + '⭐';
+                const ok = wallet.coins >= cost;
+                btn.classList.toggle('opacity-40', !ok);
+                btn.classList.toggle('grayscale', !ok);
+            };
+            setBtn('tapBuyBtn', 'tap');
+            setBtn('energyBuyBtn', 'energy');
+            setBtn('botBuyBtn', 'bot');
+        }
+
+        function buyUpgrade(type) {
+            const cost = upgradeCost(type);
+            if (wallet.coins < cost) {
+                showToast('Не хватает монет — тапай монетку! ⭐');
+                haptic('notify', 'warning');
+                return;
+            }
+            wallet.coins -= cost;
+
+            if (type === 'tap') {
+                upg.tap++;
+                showToast(`👆 Клик усилен: теперь +${upg.tap}⭐ за тапу!`);
+            } else if (type === 'energy') {
+                upg.energy++;
+                wallet.energy = maxEnergy(); // после покупки энергия сразу полная
+                showToast(`🔋 Энергия: максимум ${maxEnergy()}⚡ (и уже полная!)`);
+            } else if (type === 'bot') {
+                upg.bot++;
+                showToast(upg.bot === 1 ? '🤖 Бот Евы приступил к работе!' : `🤖 Бот прокачан: +${upg.bot}⭐/мин`);
+            }
+
+            saveWallet();
+            updateWalletUI();
+            haptic('notify', 'success');
+        }
+
+        // ---- Тап по монете ----
+        let noEnergyToastAt = 0;
+
+        function doTap(clientX, clientY) {
+            if (wallet.energy < 1) {
+                const now = Date.now();
+                if (now - noEnergyToastAt > 2500) {
+                    noEnergyToastAt = now;
+                    showToast('⚡ Энергия кончилась! Немного подожди — она восстановится');
+                }
+                const coin = document.getElementById('tapCoin');
+                coin.classList.remove('coin-shake');
+                void coin.offsetWidth;
+                coin.classList.add('coin-shake');
+                haptic('notify', 'error');
+                return;
+            }
+
+            wallet.energy -= 1;
+            wallet.coins += perTap();
+
+            // Всплывающая надпись "+N⭐" в точке касания
+            const layer = document.getElementById('floatLayer');
+            const rect = layer.getBoundingClientRect();
+            const span = document.createElement('span');
+            span.className = 'float-coin';
+            span.innerText = `+${perTap()}⭐`;
+            span.style.left = Math.round(clientX - rect.left) + 'px';
+            span.style.top = Math.round(clientY - rect.top) + 'px';
+            layer.appendChild(span);
+            setTimeout(() => span.remove(), 820);
+
+            // Анимация нажатия
+            const coin = document.getElementById('tapCoin');
+            coin.classList.remove('coin-pop');
+            void coin.offsetWidth;
+            coin.classList.add('coin-pop');
+
+            haptic('impact', 'light');
+            updateWalletUI();
+            saveWalletSoon();
+        }
+
+        // Отложенное сохранение, чтобы не писать в localStorage на каждый тап
+        let walletSaveTimer = null;
+        function saveWalletSoon() {
+            clearTimeout(walletSaveTimer);
+            walletSaveTimer = setTimeout(saveWallet, 600);
         }
 
         // ==================== КОНФИГ ЛЕНТЫ ====================
@@ -769,8 +1120,7 @@
 
             let lastTickIndex = -1;
 
-            // ФИКС: тики синхронизированы с реальной позицией ленты (читаем computed transform),
-            // а не с собственной математической моделью — раньше звук отставал из-за другой кривой easing
+            // ФИКС: тики синхронизированы с реальной позицией ленты (читаем computed transform)
             function checkTickPosition() {
                 if (!isSpinning) return;
 
@@ -781,7 +1131,6 @@
                         currentTranslate = -new DOMMatrixReadOnly(tf).m41;
                     }
                 } catch (e) {
-                    // fallback для старых WebView — приближённая математика
                     const elapsed = (performance.now() - startTime) / 1000;
                     const progress = Math.min(elapsed / spinDuration, 1);
                     currentTranslate = targetPosition * (1 - Math.pow(1 - progress, 3));
@@ -891,7 +1240,7 @@
             rarityText.style.color = rarity.color;
             rarityText.innerText = `Редкость: ${rarity.name}`;
 
-            // ФИКС: теперь фон-свечение реально работает (раньше winGlowBg был пустым)
+            // Фон-свечение цветом редкости
             const glow = document.getElementById('winGlowBg');
             glow.style.background = `radial-gradient(circle at 50% 30%, ${rarity.color}80, transparent 70%)`;
 
@@ -928,18 +1277,21 @@
         });
 
         // ==================== ВКЛАДКИ ====================
-        const TABS = ['cases', 'inventory', 'stats', 'menu'];
+        const TABS = ['cases', 'inventory', 'tap', 'stats', 'menu'];
 
         function switchTab(name) {
             if (!TABS.includes(name)) return;
 
             TABS.forEach(t => {
                 document.getElementById('tab-' + t).classList.toggle('hidden', t !== name);
-                document.getElementById('nav-' + t).classList.toggle('tab-active', t === name);
+                const nav = document.getElementById('nav-' + t);
+                if (t === 'tap') nav.classList.toggle('coin-active', t === name);
+                else nav.classList.toggle('tab-active', t === name);
             });
 
             if (name === 'inventory') renderInventory();
             if (name === 'stats') renderStats();
+            if (name === 'tap') updateWalletUI();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             haptic('impact', 'light');
@@ -1083,11 +1435,13 @@
 
         // ==================== СБРОС ПРОГРЕССА ====================
         function resetProgress() {
-            if (!confirm('Точно сбросить весь прогресс?\nИнвентарь и статистика будут удалены безвозвратно.')) return;
+            if (!confirm('Точно сбросить весь прогресс?\nИнвентарь, статистика и монеты будут удалены безвозвратно.')) return;
 
             try {
                 localStorage.removeItem(STORAGE_KEYS.inv);
                 localStorage.removeItem(STORAGE_KEYS.stats);
+                localStorage.removeItem(STORAGE_KEYS.wallet);
+                localStorage.removeItem(STORAGE_KEYS.upg);
             } catch (e) {}
 
             inventory = [];
@@ -1097,10 +1451,13 @@
                 sinceLegend: 0,
                 best: null
             };
+            wallet = { coins: 0, energy: 50, lastSeen: Date.now() };
+            upg = { tap: 1, energy: 0, bot: 0 };
 
             renderInventory();
             renderStats();
             updatePityUI();
+            updateWalletUI();
             showToast('Прогресс сброшен 🌸');
             haptic('notify', 'warning');
         }
@@ -1120,12 +1477,37 @@
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         window.addEventListener('DOMContentLoaded', () => {
             loadState();
+            loadWallet();
+
+            // Начисляем офлайн-доход (бот + энергия) и показываем уведомление
+            tickEconomy(true);
+
             renderCasePreview();
             buildReel();
             updateSoundUI();
             updatePityUI();
+            updateWalletUI();
             renderInventory();
             renderStats();
+
+            // Тап по монете
+            document.getElementById('tapCoin').addEventListener('pointerdown', (e) => {
+                getAudioContext();
+                doTap(e.clientX, e.clientY);
+            });
+
+            // Бот и энергия тикают, пока приложение открыто
+            setInterval(() => tickEconomy(false), 30000);
+        });
+
+        // При сворачивании/возврате в мини-апп — пересчитать доход
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                wallet.lastSeen = Date.now();
+                saveWallet();
+            } else {
+                tickEconomy(true);
+            }
         });
 
         // --- TELEGRAM MINI APP ---
