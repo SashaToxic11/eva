@@ -151,21 +151,21 @@
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-rose-500/20">
                     🌸
                 </div>
-                <div>
-                    <h1 class="text-lg font-bold tracking-wider uppercase bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 bg-clip-text text-transparent">
+                <div class="min-w-0">
+                    <h1 class="text-base sm:text-lg font-bold tracking-wider uppercase bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 bg-clip-text text-transparent truncate">
                         Рулетка с Евой🌸
                     </h1>
-                    <p class="text-xs text-slate-400 font-medium">Тапай, открывай кейсы и собирай гифки</p>
+                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium truncate">Тапай, открывай кейсы и собирай гифки</p>
                 </div>
             </div>
 
             <!-- Wallet + Sound Control -->
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 border border-amber-500/40 shadow-inner">
+                <div class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 border border-amber-500/40 shadow-inner">
                     <span class="text-sm">⭐</span>
                     <span id="headerCoins" class="text-sm font-black text-amber-300 tabular-nums">0</span>
                 </div>
-                <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-2 text-xs font-semibold border border-slate-700">
+                <button id="soundToggleBtn" onclick="toggleSound()" class="shrink-0 p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-2 text-xs font-semibold border border-slate-700">
                     <i id="soundIcon" class="fa-solid fa-volume-high text-rose-400"></i>
                     <span id="soundText" class="hidden sm:inline">Звук: ВКЛ</span>
                 </button>
@@ -234,13 +234,14 @@
                 <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <button id="openCaseBtn" onclick="openCase()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-lg uppercase tracking-wider rounded-2xl shadow-xl shadow-amber-500/20 transform transition active:scale-95 flex items-center justify-center gap-3">
                         <i class="fa-solid fa-gift text-xl"></i>
-                        Открыть кейс
+                        Открыть кейс · 50⭐
                     </button>
                     <button id="quickOpenBtn" onclick="openCase(true)" class="w-full sm:w-auto px-6 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm uppercase tracking-wider rounded-2xl border border-slate-700 transition active:scale-95 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-bolt text-amber-400"></i>
-                        Быстрое открытие
+                        Быстро · 50⭐
                     </button>
                 </div>
+                <p class="text-[11px] text-slate-500 font-semibold text-center mt-4">🔓 Кейс стоит 50⭐ — тапай монетку, продавай гифки или пусть бот работает</p>
             </div>
 
             <!-- POSSIBLE ITEMS CONTAINED IN CASE -->
@@ -346,7 +347,7 @@
                     <div class="h-3 bg-slate-800 rounded-full overflow-hidden">
                         <div id="energyBar" class="h-full bg-gradient-to-r from-sky-500 via-cyan-400 to-sky-300 rounded-full transition-all duration-300" style="width:100%"></div>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-2 font-semibold">Энергия полностью восстанавливается за 20 минут — даже когда приложение закрыто.</p>
+                    <p class="text-[11px] text-slate-500 mt-2 font-semibold">Энергия полностью восстанавливается за 5 минут — даже когда приложение закрыто.</p>
                 </div>
 
                 <!-- Улучшения -->
@@ -400,7 +401,7 @@
                         </div>
                     </div>
 
-                    <p class="text-[11px] text-slate-500 mt-4 font-semibold text-center">🤖 Бот кликает даже когда ты спишь. Монеты скоро можно будет тратить на кейсы!</p>
+                    <p class="text-[11px] text-slate-500 mt-4 font-semibold text-center">🤖 Бот кликает даже когда ты спишь, а монеты тратятся на кейсы — 50⭐ за открытие!</p>
                 </div>
             </div>
         </section>
@@ -476,6 +477,15 @@
                         <span id="menuSoundText" class="text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Вкл</span>
                     </button>
 
+                    <!-- Звук монетки -->
+                    <button id="menuCoinSoundBtn" onclick="toggleCoinSound()" class="w-full bg-slate-950/80 border border-slate-800 hover:border-slate-600 rounded-2xl p-4 flex items-center justify-between transition mb-3">
+                        <span class="flex items-center gap-3 font-bold text-sm text-slate-200">
+                            <i id="menuCoinSoundIcon" class="fa-solid fa-coins text-amber-300 text-lg w-5 text-center"></i>
+                            Звук монетки
+                        </span>
+                        <span id="menuCoinSoundText" class="text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Вкл</span>
+                    </button>
+
                     <!-- Сброс прогресса -->
                     <button onclick="resetProgress()" class="w-full bg-slate-950/80 border border-rose-900/60 hover:border-rose-600 rounded-2xl p-4 flex items-center justify-between transition">
                         <span class="flex items-center gap-3 font-bold text-sm text-rose-300">
@@ -515,16 +525,10 @@
                     </p>
                 </div>
 
-                <!-- О приложении -->
-                <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
-                    <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-info text-rose-400"></i>
-                        О приложении
-                    </h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Рулетка с Евой🌸 v2.1 — мини-апп для Telegram. Тапай монетку с Евой, прокачивай клик,
-                        энергию и бота-кликера. Открывай кейсы, собирай все 6 гифок в инвентарь и следи за статистикой.
-                        Прогресс, монеты и настройки сохраняются на устройстве.
+                <!-- Ева 🌸 -->
+                <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm text-center">
+                    <p class="text-lg sm:text-xl font-black bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 bg-clip-text text-transparent">
+                        Ева моя лучшая Лапушечка🌸
                     </p>
                 </div>
             </div>
@@ -582,8 +586,11 @@
                 <p id="winRarityText" class="text-xs font-semibold mb-6"></p>
 
                 <div class="flex gap-3 w-full">
-                    <button onclick="closeWinModal()" class="flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold text-sm uppercase rounded-xl transition shadow-lg shadow-amber-500/20">
-                        Закрыть
+                    <button id="winPrimaryBtn" class="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-sm uppercase rounded-xl transition shadow-lg shadow-emerald-500/20">
+                        Оставить
+                    </button>
+                    <button id="winSellBtn" class="flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold text-sm uppercase rounded-xl transition shadow-lg shadow-amber-500/20">
+                        Продать
                     </button>
                 </div>
             </div>
@@ -651,12 +658,20 @@
             inv: 'evaInventory_v1',
             stats: 'evaStats_v1',
             muted: 'evaMuted_v1',
+            coinMuted: 'evaCoinMuted_v1',
             wallet: 'evaWallet_v1',
             upg: 'evaUpgrades_v1'
         };
-        const PITY_LIMIT = 20; // каждое 20-е открытие без легендарной = гарантированная легендарная
+        const PITY_LIMIT = 20;   // каждое 20-е открытие без легендарной = гарантированная легендарная
+        const CASE_PRICE = 50;   // стоимость открытия кейса в монетах
+
+        // Цена продажи гифки по редкости (⭐): обычная 25, редкая 50, мифическая 100, легендарная 200
+        const SELL_PRICES = { consumer: 25, milSpec: 50, restricted: 100, classified: 200 };
+        function sellPrice(rarityKey) { return SELL_PRICES[rarityKey] || 25; }
 
         let isMuted = false;
+        let isCoinMuted = false;
+        let winContext = null; // контекст модалки: { item, mode: 'drop'|'view', isNew, resolved }
         let isSpinning = false;
         let audioCtx = null;
         let invFilter = 'all';
@@ -690,6 +705,7 @@
             }
 
             isMuted = localStorage.getItem(STORAGE_KEYS.muted) === '1';
+            isCoinMuted = localStorage.getItem(STORAGE_KEYS.coinMuted) === '1';
         }
 
         function saveState() {
@@ -700,7 +716,7 @@
         }
 
         // ==================== КОШЕЛЁК И ТАПАЛКА ====================
-        const ENERGY_FULL_MINUTES = 20; // полная энергия восстанавливается за 20 минут (можно 15-25)
+        const ENERGY_FULL_MINUTES = 5; // полная энергия восстанавливается за 5 минут
         const OFFLINE_CAP_MIN = 180;    // бот работает офлайн максимум 3 часа
 
         let wallet = { coins: 0, energy: 50, lastSeen: Date.now() };
@@ -873,6 +889,7 @@
             void coin.offsetWidth;
             coin.classList.add('coin-pop');
 
+            playCoinSound();
             haptic('impact', 'light');
             updateWalletUI();
             saveWalletSoon();
@@ -971,6 +988,32 @@
             } catch (e) { console.error(e); }
         }
 
+        // Звон монетки (классический "динь": B5 -> E6)
+        function playCoinSound() {
+            if (isMuted || isCoinMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+
+                const now = ctx.currentTime;
+                [[987.77, 0, 0.06], [1318.51, 0.055, 0.4]].forEach(([freq, delay, dur]) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(freq, now + delay);
+                    gain.gain.setValueAtTime(0.07, now + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now + delay);
+                    osc.stop(now + delay + dur + 0.03);
+                });
+            } catch (e) { console.error(e); }
+        }
+
         function updateSoundUI() {
             const icon = document.getElementById('soundIcon');
             const text = document.getElementById('soundText');
@@ -990,6 +1033,29 @@
                 mText.innerText = 'Вкл';
                 mText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
             }
+
+            // Переключатель звука монетки
+            const cIcon = document.getElementById('menuCoinSoundIcon');
+            const cText = document.getElementById('menuCoinSoundText');
+            if (cIcon && cText) {
+                if (isCoinMuted) {
+                    cIcon.className = 'fa-solid fa-coins text-slate-500 text-lg w-5 text-center';
+                    cText.innerText = 'Выкл';
+                    cText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-slate-700/50 text-slate-400 border border-slate-600';
+                } else {
+                    cIcon.className = 'fa-solid fa-coins text-amber-300 text-lg w-5 text-center';
+                    cText.innerText = 'Вкл';
+                    cText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+                }
+            }
+        }
+
+        function toggleCoinSound() {
+            isCoinMuted = !isCoinMuted;
+            try { localStorage.setItem(STORAGE_KEYS.coinMuted, isCoinMuted ? '1' : '0'); } catch (e) {}
+            updateSoundUI();
+            if (!isCoinMuted && !isMuted) playCoinSound(); // тестовый "динь" при включении
+            haptic('impact', 'light');
         }
 
         function toggleSound() {
@@ -1088,6 +1154,20 @@
         function openCase(isQuick = false) {
             if (isSpinning) return;
 
+            // Кейс платный: 50⭐
+            if (wallet.coins < CASE_PRICE) {
+                showToast(`Не хватает монет! Кейс стоит ${CASE_PRICE}⭐ — тапай монетку 🐕`);
+                haptic('notify', 'error');
+                const shakeBtn = document.getElementById('openCaseBtn');
+                shakeBtn.classList.remove('coin-shake');
+                void shakeBtn.offsetWidth;
+                shakeBtn.classList.add('coin-shake');
+                return;
+            }
+            wallet.coins -= CASE_PRICE;
+            updateWalletUI();
+            saveWallet();
+
             getAudioContext();
             haptic('impact', 'medium');
             isSpinning = true;
@@ -1154,9 +1234,8 @@
             setTimeout(() => {
                 isSpinning = false;
 
-                // ===== Обновление инвентаря и статистики =====
+                // ===== Статистика (предмет попадёт в инвентарь после выбора "Оставить") =====
                 const isNew = !inventory.some(e => e.id === winnerItem.id);
-                inventory.push({ id: winnerItem.id, ts: Date.now() });
 
                 stats.opens++;
                 stats.byRarity[winnerItem.rarity] = (stats.byRarity[winnerItem.rarity] || 0) + 1;
@@ -1182,7 +1261,7 @@
                 if (winCard) winCard.classList.add('reel-winning');
 
                 playWinSound(winnerItem.rarity);
-                setTimeout(() => showWinModal(winnerItem, { isNew: isNew }), 750);
+                setTimeout(() => showWinModal(winnerItem, { isNew: isNew, mode: 'drop' }), 750);
 
                 openBtn.disabled = false;
                 quickBtn.disabled = false;
@@ -1214,6 +1293,14 @@
             const card = document.getElementById('winModalCard');
             const rarity = RARITIES[item.rarity];
 
+            // Контекст: drop = выпало из кейса (Оставить/Продать), view = просмотр из инвентаря
+            winContext = {
+                item: item,
+                mode: opts.mode === 'drop' ? 'drop' : 'view',
+                isNew: !!opts.isNew,
+                resolved: false
+            };
+
             // Метка "Новый предмет!"
             const newBadge = document.getElementById('winNewBadge');
             if (opts.isNew) newBadge.classList.remove('hidden');
@@ -1240,6 +1327,22 @@
             rarityText.style.color = rarity.color;
             rarityText.innerText = `Редкость: ${rarity.name}`;
 
+            // Кнопки: "Оставить/Закрыть" + "Продать за N⭐"
+            const price = sellPrice(item.rarity);
+            const primaryBtn = document.getElementById('winPrimaryBtn');
+            const sellBtn = document.getElementById('winSellBtn');
+            if (winContext.mode === 'drop') {
+                primaryBtn.innerText = 'Оставить 🌸';
+                primaryBtn.className = 'flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-sm uppercase rounded-xl transition shadow-lg shadow-emerald-500/20';
+                primaryBtn.onclick = keepWinItem;
+            } else {
+                primaryBtn.innerText = 'Закрыть';
+                primaryBtn.className = 'flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-sm uppercase rounded-xl transition border border-slate-700';
+                primaryBtn.onclick = closeWinModal;
+            }
+            sellBtn.innerText = `Продать за ${price}⭐`;
+            sellBtn.onclick = sellWinItem;
+
             // Фон-свечение цветом редкости
             const glow = document.getElementById('winGlowBg');
             glow.style.background = `radial-gradient(circle at 50% 30%, ${rarity.color}80, transparent 70%)`;
@@ -1253,7 +1356,55 @@
             card.classList.add('scale-100');
         }
 
+        function addItemToInventory(item) {
+            inventory.push({ id: item.id, ts: Date.now() });
+            saveState();
+            renderInventory();
+        }
+
+        // "Оставить" — кладём гифку в инвентарь
+        function keepWinItem() {
+            if (winContext && !winContext.resolved) {
+                if (winContext.mode === 'drop') addItemToInventory(winContext.item);
+                winContext.resolved = true;
+            }
+            closeWinModal();
+        }
+
+        // "Продать" — монеты сразу; из инвентаря уходит одна копия
+        function sellWinItem() {
+            if (!winContext || winContext.resolved) return;
+            const item = winContext.item;
+            const isView = winContext.mode === 'view';
+            winContext.resolved = true;
+
+            const price = sellPrice(item.rarity);
+            wallet.coins += price;
+            updateWalletUI();
+            saveWallet();
+
+            if (isView) {
+                const idx = inventory.findIndex(e => e.id === item.id);
+                if (idx !== -1) inventory.splice(idx, 1);
+                saveState();
+                renderInventory();
+                renderStats();
+            }
+
+            showToast(`+${price}⭐ — гифка продана!`);
+            playCoinSound();
+            haptic('notify', 'success');
+            closeWinModal();
+        }
+
         function closeWinModal() {
+            // Окно закрыто без выбора — по умолчанию оставляем гифку в инвентаре
+            if (winContext && !winContext.resolved && winContext.mode === 'drop') {
+                addItemToInventory(winContext.item);
+                showToast('Гифка сохранена в инвентарь 🌸');
+            }
+            winContext = null;
+
             const modal = document.getElementById('winModal');
             const card = document.getElementById('winModalCard');
 
@@ -1387,7 +1538,7 @@
             const item = CASE_ITEMS.find(it => it.id === id);
             if (!item) return;
             const { counts } = getInvData();
-            showWinModal(item, { count: counts[id] || 1 });
+            showWinModal(item, { count: counts[id] || 1, mode: 'view' });
             haptic('impact', 'light');
         }
 
