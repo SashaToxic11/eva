@@ -100,6 +100,13 @@
         }
         .reel-winning { animation: winFlash .7s ease; z-index: 25; }
 
+        /* ===== МИНИ-ИГРЫ ===== */
+        @keyframes crashFlash {
+            0%   { background-color: rgba(244, 63, 94, 0.35); }
+            100% { background-color: transparent; }
+        }
+        .crash-flash { animation: crashFlash .6s ease; }
+
         /* ===== ТАПАЛКА ===== */
         @keyframes floatUp {
             0%   { opacity: 1; transform: translate(-50%, 0) scale(1); }
@@ -159,16 +166,12 @@
                 </div>
             </div>
 
-            <!-- Wallet + Sound Control -->
+            <!-- Wallet -->
             <div class="flex items-center space-x-2 sm:space-x-3">
                 <div class="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 border border-amber-500/40 shadow-inner">
                     <span class="text-sm">⭐</span>
                     <span id="headerCoins" class="text-sm font-black text-amber-300 tabular-nums">0</span>
                 </div>
-                <button id="soundToggleBtn" onclick="toggleSound()" class="shrink-0 p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition flex items-center gap-2 text-xs font-semibold border border-slate-700">
-                    <i id="soundIcon" class="fa-solid fa-volume-high text-rose-400"></i>
-                    <span id="soundText" class="hidden sm:inline">Звук: ВКЛ</span>
-                </button>
             </div>
         </div>
     </header>
@@ -458,6 +461,201 @@
             </div>
         </section>
 
+        <!-- ============ ВКЛАДКА: ИГРЫ (МИНИ-ИГРЫ) ============ -->
+        <section id="tab-games" class="hidden">
+            <div class="flex flex-col gap-5">
+
+                <!-- Хаб игр -->
+                <div id="gamesHub">
+                    <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                        <h2 class="text-xl font-extrabold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-dice text-rose-400"></i>
+                            Мини-игры
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-1 font-medium">Ставь монетки, рискуй и забирай куш 🎰</p>
+
+                        <div id="gameHistory" class="flex flex-wrap gap-1.5 mt-4"></div>
+
+                        <div class="grid grid-cols-2 gap-3 mt-4">
+                            <button onclick="openGame('upgrade')" class="relative overflow-hidden bg-slate-950/80 border border-slate-800 hover:border-amber-400/60 rounded-2xl p-4 text-left transition active:scale-95 hover:-translate-y-0.5">
+                                <div class="absolute -top-8 -right-8 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-slate-950 text-lg shadow-lg shadow-amber-500/20 mb-3">
+                                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                                </div>
+                                <div class="font-extrabold text-slate-100 text-sm">Апгрейд гифок</div>
+                                <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Шанс 45% превратить гифку в редкость выше</div>
+                            </button>
+
+                            <button onclick="openGame('towers')" class="relative overflow-hidden bg-slate-950/80 border border-slate-800 hover:border-violet-400/60 rounded-2xl p-4 text-left transition active:scale-95 hover:-translate-y-0.5">
+                                <div class="absolute -top-8 -right-8 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-violet-500 to-purple-400 flex items-center justify-center text-white text-lg shadow-lg shadow-violet-500/20 mb-3">
+                                    <i class="fa-solid fa-tower-observation"></i>
+                                </div>
+                                <div class="font-extrabold text-slate-100 text-sm">Башня</div>
+                                <div class="text-[11px] text-slate-500 font-semibold mt-0.5">8 этажей, бомбы — забирай до ×11</div>
+                            </button>
+
+                            <button onclick="openGame('mines')" class="relative overflow-hidden bg-slate-950/80 border border-slate-800 hover:border-rose-400/60 rounded-2xl p-4 text-left transition active:scale-95 hover:-translate-y-0.5">
+                                <div class="absolute -top-8 -right-8 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-rose-500 to-pink-400 flex items-center justify-center text-white text-lg shadow-lg shadow-rose-500/20 mb-3">
+                                    <i class="fa-solid fa-bomb"></i>
+                                </div>
+                                <div class="font-extrabold text-slate-100 text-sm">Сапёр</div>
+                                <div class="text-[11px] text-slate-500 font-semibold mt-0.5">25 плиток — открывай и забирай до взрыва</div>
+                            </button>
+
+                            <button onclick="openGame('crash')" class="relative overflow-hidden bg-slate-950/80 border border-slate-800 hover:border-sky-400/60 rounded-2xl p-4 text-left transition active:scale-95 hover:-translate-y-0.5">
+                                <div class="absolute -top-8 -right-8 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-sky-500 to-cyan-400 flex items-center justify-center text-slate-950 text-lg shadow-lg shadow-sky-500/20 mb-3">
+                                    <i class="fa-solid fa-rocket"></i>
+                                </div>
+                                <div class="font-extrabold text-slate-100 text-sm">Краш</div>
+                                <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Успей забрать до взрыва ракеты — до ×100</div>
+                            </button>
+                        </div>
+
+                        <p class="text-[11px] text-slate-500 font-semibold text-center mt-4">Во всех играх ставки от 10⭐ до 100⭐ — монеты берутся из общего кошелька</p>
+                    </div>
+                </div>
+
+                <!-- ИГРА: АПГРЕЙД ГИФОК -->
+                <div id="game-upgrade" class="hidden">
+                    <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <button onclick="backToGamesHub()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-black uppercase text-slate-300 transition active:scale-95">
+                                <i class="fa-solid fa-arrow-left mr-1"></i>Игры
+                            </button>
+                            <h3 class="text-lg font-extrabold text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-arrow-up-right-dots text-amber-300"></i>Апгрейд
+                            </h3>
+                            <div class="w-14"></div>
+                        </div>
+
+                        <p class="text-[11px] text-slate-500 font-semibold text-center mb-4">Выбери гифку и попробуй превратить её в редкость выше. Не повезло — гифка сгорает 🔥</p>
+
+                        <div class="relative w-44 h-44 sm:w-52 sm:h-52 mx-auto select-none">
+                            <div id="upgradeDial" class="absolute inset-0 rounded-full border-4 border-slate-800 shadow-inner" style="background: conic-gradient(from 0deg, #334155 0deg, #1e293b 360deg);"></div>
+                            <div class="absolute inset-3 rounded-full bg-slate-950 border border-slate-800 flex flex-col items-center justify-center z-10">
+                                <span id="upgradeDialMult" class="text-2xl font-black text-amber-300">—</span>
+                                <span id="upgradeChance" class="text-[11px] text-slate-400 font-bold uppercase tracking-wider text-center px-3">нет гифки</span>
+                            </div>
+                            <div id="upgradeNeedle" class="absolute inset-0 z-20 pointer-events-none" style="transform: rotate(0deg);">
+                                <div class="absolute left-1/2 top-1 -translate-x-1/2 w-1.5 h-9 rounded-full bg-rose-400/80"></div>
+                                <div class="absolute left-1/2 top-0 -translate-x-1/2 w-0 h-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[10px] border-t-rose-400"></div>
+                            </div>
+                        </div>
+
+                        <p id="upgradeTargetText" class="text-center text-sm mt-4 min-h-[20px]"></p>
+
+                        <div class="mt-5">
+                            <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-2">Твои гифки</div>
+                            <div id="upgradeItems" class="flex gap-2 overflow-x-auto pb-2"></div>
+                        </div>
+
+                        <button id="upgradeBtn" onclick="doUpgradeRoll()" class="mt-4 w-full py-4 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-base uppercase tracking-wider rounded-2xl shadow-xl shadow-amber-500/20 transition active:scale-95 disabled:opacity-40">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Апгрейдить!
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ИГРА: БАШНЯ -->
+                <div id="game-towers" class="hidden">
+                    <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <button onclick="backToGamesHub()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-black uppercase text-slate-300 transition active:scale-95">
+                                <i class="fa-solid fa-arrow-left mr-1"></i>Игры
+                            </button>
+                            <h3 class="text-lg font-extrabold text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-tower-observation text-violet-300"></i>Башня
+                            </h3>
+                            <div class="w-14"></div>
+                        </div>
+
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4">
+                            <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-2">Ставка</div>
+                            <div id="towersBetChips" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <div id="towersBoard" class="grid grid-cols-3 gap-1.5 mt-4"></div>
+                        <p id="towersInfo" class="text-xs text-slate-400 font-semibold text-center mt-3 min-h-[16px]"></p>
+
+                        <div class="flex gap-3 mt-4">
+                            <button id="towersStartBtn" onclick="towersStart()" class="flex-1 py-4 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-violet-500/20 transition active:scale-95">Поставить 25⭐</button>
+                            <button id="towersCashBtn" onclick="towersCash()" class="hidden flex-1 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-500/20 transition active:scale-95">Забрать</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИГРА: САПЁР -->
+                <div id="game-mines" class="hidden">
+                    <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <button onclick="backToGamesHub()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-black uppercase text-slate-300 transition active:scale-95">
+                                <i class="fa-solid fa-arrow-left mr-1"></i>Игры
+                            </button>
+                            <h3 class="text-lg font-extrabold text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-bomb text-rose-300"></i>Сапёр
+                            </h3>
+                            <div class="w-14"></div>
+                        </div>
+
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-2">Ставка</div>
+                                <div id="minesBetChips" class="flex flex-wrap gap-2"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-2">Бомбы</div>
+                                <div id="minesBombChips" class="flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+
+                        <div id="minesBoard" class="grid grid-cols-5 gap-1.5 mt-4"></div>
+                        <p id="minesInfo" class="text-xs text-slate-400 font-semibold text-center mt-3 min-h-[16px]"></p>
+
+                        <div class="flex gap-3 mt-4">
+                            <button id="minesStartBtn" onclick="minesStart()" class="flex-1 py-4 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 text-white font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-rose-500/20 transition active:scale-95">Поставить 25⭐</button>
+                            <button id="minesCashBtn" onclick="minesCash()" class="hidden flex-1 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-500/20 transition active:scale-95">Забрать</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИГРА: КРАШ -->
+                <div id="game-crash" class="hidden">
+                    <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-sm">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <button onclick="backToGamesHub()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-black uppercase text-slate-300 transition active:scale-95">
+                                <i class="fa-solid fa-arrow-left mr-1"></i>Игры
+                            </button>
+                            <h3 class="text-lg font-extrabold text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-rocket text-sky-300"></i>Краш
+                            </h3>
+                            <div class="w-14"></div>
+                        </div>
+
+                        <div id="crashArea" class="relative h-44 sm:h-52 rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center">
+                            <div id="crashGlow" class="absolute inset-0 opacity-60 pointer-events-none" style="background: radial-gradient(circle at 50% 100%, rgba(56,189,248,.35), transparent 65%);"></div>
+                            <div class="relative z-10 text-center">
+                                <div id="crashMult" class="text-5xl sm:text-6xl font-black tabular-nums text-sky-300">1.00x</div>
+                                <div id="crashHint" class="text-xs text-slate-400 font-semibold mt-2">Ставка растёт с каждой секундой — забери до взрыва! 🚀</div>
+                            </div>
+                            <i id="crashRocket" class="fa-solid fa-rocket absolute text-2xl text-sky-300 z-10" style="left:6%; bottom:8%; transform: rotate(-20deg);"></i>
+                        </div>
+
+                        <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 mt-4">
+                            <div class="text-[10px] uppercase tracking-widest text-slate-500 font-black mb-2">Ставка</div>
+                            <div id="crashBetChips" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <div class="flex gap-3 mt-4">
+                            <button id="crashStartBtn" onclick="crashStart()" class="flex-1 py-4 bg-gradient-to-r from-sky-500 to-cyan-400 hover:from-sky-400 hover:to-cyan-300 text-slate-950 font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-sky-500/20 transition active:scale-95">Поставить 25⭐</button>
+                            <button id="crashCashBtn" onclick="crashCash()" class="hidden flex-1 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl shadow-emerald-500/20 transition active:scale-95">Забрать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- ============ ВКЛАДКА: МЕНЮ ============ -->
         <section id="tab-menu" class="hidden">
             <div class="flex flex-col gap-4">
@@ -528,7 +726,7 @@
                 <!-- Ева 🌸 -->
                 <div class="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm text-center">
                     <p class="text-lg sm:text-xl font-black bg-gradient-to-r from-rose-400 via-pink-400 to-amber-300 bg-clip-text text-transparent">
-                        Ева моя лучшая Лапушечка🌸
+                        Ева моя лучшая Лепёшечка🌸
                     </p>
                 </div>
             </div>
@@ -536,14 +734,18 @@
     </main>
 
     <!-- ============ НИЖНЯЯ НАВИГАЦИЯ ============ -->
-    <nav class="tabbar fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 grid grid-cols-5 items-end">
+    <nav class="tabbar fixed bottom-0 inset-x-0 z-40 bg-slate-900/95 backdrop-blur border-t border-slate-800 grid grid-cols-6 items-end">
         <button id="nav-cases" onclick="switchTab('cases')" class="tab-btn tab-active py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-gift text-lg"></i>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Кейсы</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Кейсы</span>
         </button>
         <button id="nav-inventory" onclick="switchTab('inventory')" class="tab-btn py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-boxes-stacked text-lg"></i>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Инвентарь</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Инвентарь</span>
+        </button>
+        <button id="nav-games" onclick="switchTab('games')" class="tab-btn py-2.5 flex flex-col items-center gap-1">
+            <i class="fa-solid fa-dice text-lg"></i>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Игры</span>
         </button>
         <!-- Центральная монетка -->
         <div class="relative flex items-start justify-center">
@@ -555,11 +757,11 @@
         </div>
         <button id="nav-stats" onclick="switchTab('stats')" class="tab-btn py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-chart-column text-lg"></i>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Статистика</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Статистика</span>
         </button>
         <button id="nav-menu" onclick="switchTab('menu')" class="tab-btn py-2.5 flex flex-col items-center gap-1">
             <i class="fa-solid fa-sliders text-lg"></i>
-            <span class="text-[10px] font-bold uppercase tracking-wider">Меню</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Меню</span>
         </button>
     </nav>
 
@@ -1015,23 +1217,19 @@
         }
 
         function updateSoundUI() {
-            const icon = document.getElementById('soundIcon');
-            const text = document.getElementById('soundText');
+            // Звук включается/выключается только в Меню — кнопки в шапке больше нет
             const mIcon = document.getElementById('menuSoundIcon');
             const mText = document.getElementById('menuSoundText');
-
-            if (isMuted) {
-                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
-                text.innerText = 'Звук: ВЫКЛ';
-                mIcon.className = 'fa-solid fa-volume-xmark text-slate-500 text-lg w-5 text-center';
-                mText.innerText = 'Выкл';
-                mText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-slate-700/50 text-slate-400 border border-slate-600';
-            } else {
-                icon.className = 'fa-solid fa-volume-high text-rose-400';
-                text.innerText = 'Звук: ВКЛ';
-                mIcon.className = 'fa-solid fa-volume-high text-rose-400 text-lg w-5 text-center';
-                mText.innerText = 'Вкл';
-                mText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+            if (mIcon && mText) {
+                if (isMuted) {
+                    mIcon.className = 'fa-solid fa-volume-xmark text-slate-500 text-lg w-5 text-center';
+                    mText.innerText = 'Выкл';
+                    mText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-slate-700/50 text-slate-400 border border-slate-600';
+                } else {
+                    mIcon.className = 'fa-solid fa-volume-high text-rose-400 text-lg w-5 text-center';
+                    mText.innerText = 'Вкл';
+                    mText.className = 'text-xs font-black uppercase px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
+                }
             }
 
             // Переключатель звука монетки
@@ -1427,8 +1625,604 @@
             if (e.key === 'Escape') closeWinModal();
         });
 
+        // ==================== МИНИ-ИГРЫ ====================
+        const UPGRADE_CHAIN = { consumer: 'milSpec', milSpec: 'restricted', restricted: 'classified' };
+        const BET_OPTIONS = [10, 25, 50, 100];
+        const GAMES = ['upgrade', 'towers', 'mines', 'crash'];
+
+        let gamesView = 'hub';
+        let gameHistory = [];
+
+        let upgradeSelId = null;
+        let upgradeRolling = false;
+
+        let towers = { bet: 25, round: false, level: 0, bombs: [], picks: [], dead: false };
+        let mines  = { bet: 25, bombsCount: 5, round: false, bombs: [], picked: [], dead: false };
+        let crash  = { bet: 25, round: false, crashAt: 0, mult: 1, t0: 0, raf: 0, showBoom: false };
+
+        // Глухой "проигрышный" звук
+        function playLoseSound() {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(330, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.35);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.42);
+            } catch (e) { /* ignore */ }
+        }
+
+        function pushGameHistory(text, win) {
+            gameHistory.unshift({ t: text, win: win });
+            if (gameHistory.length > 10) gameHistory.pop();
+            renderGameHistory();
+        }
+
+        function renderGameHistory() {
+            const el = document.getElementById('gameHistory');
+            if (!el) return;
+            if (gameHistory.length === 0) {
+                el.innerHTML = '<span class="text-[10px] text-slate-500 font-semibold">Тут появятся твои последние игры 🎲</span>';
+                return;
+            }
+            el.innerHTML = gameHistory.map(h =>
+                `<span class="px-2.5 py-1 rounded-lg text-[10px] font-black border ${h.win ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' : 'bg-rose-500/10 text-rose-300 border-rose-500/30'}">${h.t}</span>`
+            ).join('');
+        }
+
+        function betChipsHTML(fnName, current) {
+            return BET_OPTIONS.map(v => {
+                const active = v === current;
+                return `<button onclick="${fnName}(${v})" class="px-3.5 py-2 rounded-xl text-xs font-black border transition active:scale-95 ${active ? 'bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 border-amber-300 shadow-lg shadow-amber-500/20' : 'bg-slate-950/80 text-slate-300 border-slate-700 hover:border-slate-500'}">${v}⭐</button>`;
+            }).join('');
+        }
+
+        function takeBet(bet) {
+            if (wallet.coins < bet) {
+                showToast(`Не хватает монет! Нужно ${bet}⭐ — тапай монетку 🐕`);
+                haptic('notify', 'error');
+                return false;
+            }
+            wallet.coins -= bet;
+            updateWalletUI();
+            saveWallet();
+            return true;
+        }
+
+        // ---- Навигация внутри вкладки "Игры" ----
+        function renderGamesView() {
+            const hub = document.getElementById('gamesHub');
+            if (!hub) return;
+            GAMES.forEach(g => {
+                const el = document.getElementById('game-' + g);
+                if (el) el.classList.toggle('hidden', gamesView !== g);
+            });
+            hub.classList.toggle('hidden', gamesView !== 'hub');
+            if (gamesView === 'hub') { renderGameHistory(); return; }
+            if (gamesView === 'upgrade') renderUpgrade();
+            if (gamesView === 'towers') renderTowers();
+            if (gamesView === 'mines') renderMines();
+            if (gamesView === 'crash') renderCrash();
+        }
+
+        function openGame(name) {
+            if (!GAMES.includes(name)) return;
+            gamesView = name;
+            renderGamesView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            haptic('impact', 'light');
+        }
+
+        function backToGamesHub() {
+            gamesView = 'hub';
+            renderGamesView();
+            haptic('select');
+        }
+
+        // ---- АПГРЕЙД ГИФОК ----
+        function upgradeChance(rarityKey) {
+            const chain = UPGRADE_CHAIN[rarityKey];
+            if (!chain) return 0;
+            return Math.round((sellPrice(rarityKey) / sellPrice(chain)) * 90);
+        }
+
+        function getUpgradeSelection() {
+            const { counts } = getInvData();
+            const sel = upgradeSelId ? CASE_ITEMS.find(i => i.id === upgradeSelId) : null;
+            if (sel && counts[sel.id] && UPGRADE_CHAIN[sel.rarity]) return sel.id;
+            upgradeSelId = null;
+            for (const it of CASE_ITEMS) {
+                if (counts[it.id] && UPGRADE_CHAIN[it.rarity]) { upgradeSelId = it.id; break; }
+            }
+            return upgradeSelId;
+        }
+
+        function selectUpgradeItem(id) {
+            upgradeSelId = id;
+            renderUpgrade();
+            haptic('select');
+        }
+
+        function removeOneFromInventory(id) {
+            const idx = inventory.findIndex(e => e.id === id);
+            if (idx !== -1) inventory.splice(idx, 1);
+            saveState();
+            renderInventory();
+        }
+
+        function renderUpgrade() {
+            const itemsRow = document.getElementById('upgradeItems');
+            const dial = document.getElementById('upgradeDial');
+            const dialMult = document.getElementById('upgradeDialMult');
+            const chanceEl = document.getElementById('upgradeChance');
+            const targetEl = document.getElementById('upgradeTargetText');
+            const btn = document.getElementById('upgradeBtn');
+            if (!itemsRow || !dial || !btn) return;
+
+            const { counts } = getInvData();
+            const selId = getUpgradeSelection();
+            const selItem = selId ? CASE_ITEMS.find(i => i.id === selId) : null;
+
+            const owned = CASE_ITEMS.filter(it => counts[it.id]);
+            if (owned.length === 0) {
+                itemsRow.innerHTML = '<span class="text-xs text-slate-500 font-semibold py-3">Инвентарь пуст — открой кейс, чтобы апгрейдить гифки!</span>';
+            } else {
+                itemsRow.innerHTML = owned.map(it => {
+                    const r = RARITIES[it.rarity];
+                    const can = !!UPGRADE_CHAIN[it.rarity];
+                    const active = selId === it.id;
+                    return `
+                        <button ${can ? `onclick="selectUpgradeItem(${it.id})"` : 'disabled'}
+                            class="shrink-0 w-20 rounded-2xl border-2 ${r.class} p-2 flex flex-col items-center transition ${active ? 'ring-2 ring-amber-300 -translate-y-1' : ''} ${can ? 'cursor-pointer' : 'opacity-40 grayscale'}">
+                            <video class="w-10 h-10 object-cover rounded-lg pointer-events-none" src="${it.video}" muted loop autoplay playsinline onerror="videoFallback(this, '${it.rarity}')"></video>
+                            <span class="text-[9px] font-black text-slate-300 mt-1 truncate w-full text-center">${it.name}</span>
+                            <span class="text-[9px] font-black text-amber-300">×${counts[it.id]}</span>
+                        </button>`;
+                }).join('');
+            }
+
+            if (!selItem) {
+                dial.style.background = 'conic-gradient(from 0deg, #334155 0deg, #1e293b 360deg)';
+                dialMult.innerText = '—';
+                chanceEl.innerText = 'нет гифки';
+                targetEl.innerHTML = '<span class="text-slate-500 font-semibold text-xs">Выбери гифку из ряда ниже (легендарные — уже максимум)</span>';
+                btn.disabled = true;
+            } else {
+                const chance = upgradeChance(selItem.rarity);
+                const nextKey = UPGRADE_CHAIN[selItem.rarity];
+                const deg = Math.round(360 * chance / 100);
+                dial.style.background = `conic-gradient(from 0deg, #22c55e 0deg, #22c55e ${deg}deg, #1e293b ${deg}deg, #1e293b 360deg)`;
+                dialMult.innerText = `×${(sellPrice(nextKey) / sellPrice(selItem.rarity)).toFixed(1)}`;
+                chanceEl.innerText = `шанс ${chance}%`;
+                targetEl.innerHTML = `<span class="font-extrabold" style="color:${RARITIES[selItem.rarity].color}">${selItem.name}</span>
+                    <i class="fa-solid fa-arrow-right-long mx-2 text-slate-500"></i>
+                    <span class="font-extrabold" style="color:${RARITIES[nextKey].color}">случайная ${RARITIES[nextKey].name}</span>`;
+                btn.disabled = false;
+            }
+
+            if (upgradeRolling) btn.disabled = true;
+
+            if (!upgradeRolling) {
+                const needle = document.getElementById('upgradeNeedle');
+                needle.style.transition = 'none';
+                needle.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function doUpgradeRoll() {
+            if (upgradeRolling) return;
+            const selId = getUpgradeSelection();
+            if (!selId) { showToast('Сначала выбери гифку!'); return; }
+            const item = CASE_ITEMS.find(i => i.id === selId);
+            const chance = upgradeChance(item.rarity);
+            upgradeRolling = true;
+            document.getElementById('upgradeBtn').disabled = true;
+
+            const r = Math.random();
+            const win = (r * 100) < chance;
+            const angle = Math.round(r * 360);
+
+            const needle = document.getElementById('upgradeNeedle');
+            needle.style.transition = 'none';
+            needle.style.transform = 'rotate(0deg)';
+            void needle.offsetWidth;
+            needle.style.transition = 'transform 4s cubic-bezier(0.15, 0.85, 0.25, 1)';
+            needle.style.transform = `rotate(${1800 + angle}deg)`;
+
+            getAudioContext();
+            haptic('impact', 'medium');
+            setTimeout(() => resolveUpgrade(item, chance, win), 4150);
+        }
+
+        function resolveUpgrade(item, chance, win) {
+            removeOneFromInventory(item.id);
+            if (win) {
+                const nextKey = UPGRADE_CHAIN[item.rarity];
+                const pool = CASE_ITEMS.filter(i => i.rarity === nextKey);
+                const won = pool[Math.floor(Math.random() * pool.length)];
+                addItemToInventory(won);
+                upgradeSelId = won.id;
+                playWinSound(nextKey === 'classified' ? 'classified' : 'milSpec');
+                haptic('notify', 'success');
+                showToast(`🎉 Апгрейд удался: ${won.name} (${RARITIES[nextKey].name})!`);
+                pushGameHistory('Апгрейд ✓', true);
+            } else {
+                upgradeSelId = null;
+                playLoseSound();
+                haptic('notify', 'error');
+                showToast(`🔥 Не повезло — ${item.name} сгорела (шанс был ${chance}%)`);
+                pushGameHistory('Апгрейд ✗', false);
+            }
+            setTimeout(() => { upgradeRolling = false; renderUpgrade(); }, 650);
+        }
+
+        // ---- БАШНЯ ----
+        function towersSetBet(v) {
+            if (towers.round) { showToast('Раунд уже идёт — сначала забери выигрыш!'); return; }
+            towers.bet = v;
+            renderTowers();
+            haptic('select');
+        }
+
+        function towersMultAt(level) { return Math.round(100 * Math.pow(1.35, level)) / 100; }
+
+        function towersStart() {
+            if (towers.round) return;
+            if (!takeBet(towers.bet)) return;
+            towers.round = true;
+            towers.level = 0;
+            towers.dead = false;
+            towers.picks = [];
+            towers.bombs = Array.from({ length: 8 }, () => Math.floor(Math.random() * 3));
+            getAudioContext();
+            renderTowers();
+            haptic('impact', 'medium');
+        }
+
+        function towersPick(r, col) {
+            if (!towers.round || r !== towers.level) return;
+            if (towers.bombs[r] === col) {
+                towers.dead = true;
+                towers.round = false;
+                playLoseSound();
+                haptic('notify', 'error');
+                showToast(`💥 Бомба! Ставка ${towers.bet}⭐ сгорела`);
+                pushGameHistory(`Башня -${towers.bet}⭐`, false);
+                renderTowers();
+                return;
+            }
+            towers.picks.push(col);
+            towers.level++;
+            playTickSound();
+            haptic('impact', 'light');
+            if (towers.level >= 8) { towersCash(); return; }
+            renderTowers();
+        }
+
+        function towersCash() {
+            if (!towers.round || towers.level === 0) return;
+            const mult = towersMultAt(towers.level);
+            const win = Math.round(towers.bet * mult);
+            towers.round = false;
+            towers.level = 0;
+            towers.dead = false;
+            towers.picks = [];
+            wallet.coins += win;
+            updateWalletUI();
+            saveWallet();
+            playWinSound(mult >= 3 ? 'classified' : 'consumer');
+            haptic('notify', 'success');
+            showToast(`🏆 Забрал +${win}⭐ (×${mult.toFixed(2)})`);
+            pushGameHistory(`Башня +${win}⭐`, true);
+            renderTowers();
+        }
+
+        function renderTowers() {
+            const board = document.getElementById('towersBoard');
+            const startBtn = document.getElementById('towersStartBtn');
+            const cashBtn = document.getElementById('towersCashBtn');
+            const chips = document.getElementById('towersBetChips');
+            const info = document.getElementById('towersInfo');
+            if (!board || !startBtn) return;
+
+            chips.innerHTML = betChipsHTML('towersSetBet', towers.bet);
+
+            const curWin = Math.round(towers.bet * towersMultAt(towers.level));
+            if (towers.round) {
+                info.innerHTML = `Забрать сейчас: <span class="text-amber-300 font-black">${curWin}⭐</span> · следующая ступень ×${towersMultAt(towers.level + 1).toFixed(2)}`;
+            } else if (towers.dead) {
+                info.innerHTML = '<span class="text-rose-300 font-bold">Бомба! Попробуй ещё раз 💣</span>';
+            } else {
+                info.innerHTML = '8 этажей, на каждом бомба · каждый этаж ×1.35';
+            }
+
+            startBtn.classList.toggle('hidden', towers.round);
+            cashBtn.classList.toggle('hidden', !towers.round);
+            if (towers.round) cashBtn.innerText = `Забрать ${curWin}⭐`;
+            startBtn.innerText = `Поставить ${towers.bet}⭐`;
+
+            let html = '';
+            for (let r = 7; r >= 0; r--) {
+                const isCurrent = towers.round && r === towers.level;
+                const isDone = towers.round && r < towers.level;
+                for (let col = 0; col < 3; col++) {
+                    let cls = 'w-full h-8 sm:h-10 rounded-xl flex items-center justify-center border text-sm transition select-none ';
+                    let icon = '';
+                    if (isDone) {
+                        if (towers.picks[r] === col) {
+                            cls += 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+                            icon = '<i class="fa-solid fa-check"></i>';
+                        } else {
+                            cls += 'bg-slate-950/60 border-slate-800 opacity-40';
+                        }
+                    } else if (towers.dead && r === towers.level && towers.bombs[r] === col) {
+                        cls += 'bg-rose-500/20 border-rose-500/50 text-rose-300';
+                        icon = '<i class="fa-solid fa-bomb"></i>';
+                    } else if (isCurrent) {
+                        cls += 'bg-slate-900 border-slate-700 hover:border-amber-300 cursor-pointer active:scale-95 text-slate-500';
+                        icon = '<i class="fa-regular fa-circle-question text-xs"></i>';
+                    } else {
+                        cls += 'bg-slate-950/60 border-slate-800 opacity-50';
+                    }
+                    const onclick = isCurrent ? ` onclick="towersPick(${r}, ${col})"` : '';
+                    html += `<button${onclick} class="${cls}">${icon}</button>`;
+                }
+            }
+            board.innerHTML = html;
+        }
+
+        // ---- САПЁР ----
+        function minesSetBet(v) {
+            if (mines.round) { showToast('Раунд уже идёт!'); return; }
+            mines.bet = v;
+            renderMines();
+            haptic('select');
+        }
+
+        function minesSetBombs(n) {
+            if (mines.round) { showToast('Раунд уже идёт!'); return; }
+            mines.bombsCount = n;
+            renderMines();
+            haptic('select');
+        }
+
+        function minesMultiplier(picks, bombs) {
+            let m = 0.95;
+            for (let i = 0; i < picks; i++) m *= (25 - i) / (25 - bombs - i);
+            return Math.round(m * 100) / 100;
+        }
+
+        function minesStart() {
+            if (mines.round) return;
+            if (!takeBet(mines.bet)) return;
+            mines.round = true;
+            mines.dead = false;
+            mines.picked = [];
+            const bombSet = new Set();
+            while (bombSet.size < mines.bombsCount) bombSet.add(Math.floor(Math.random() * 25));
+            mines.bombs = Array.from(bombSet);
+            getAudioContext();
+            renderMines();
+            haptic('impact', 'medium');
+        }
+
+        function minesPick(idx) {
+            if (!mines.round || mines.picked.includes(idx)) return;
+            if (mines.bombs.includes(idx)) {
+                mines.dead = true;
+                mines.round = false;
+                playLoseSound();
+                haptic('notify', 'error');
+                showToast(`💥 Сапёр подорвался! Ставка ${mines.bet}⭐ сгорела`);
+                pushGameHistory(`Сапёр -${mines.bet}⭐`, false);
+                renderMines();
+                return;
+            }
+            mines.picked.push(idx);
+            playTickSound();
+            haptic('impact', 'light');
+            if (mines.picked.length >= 25 - mines.bombsCount) { minesCash(); return; }
+            renderMines();
+        }
+
+        function minesCash() {
+            if (!mines.round || mines.picked.length === 0) return;
+            const mult = minesMultiplier(mines.picked.length, mines.bombsCount);
+            const win = Math.round(mines.bet * mult);
+            mines.round = false;
+            wallet.coins += win;
+            updateWalletUI();
+            saveWallet();
+            playWinSound(mult >= 3 ? 'classified' : 'consumer');
+            haptic('notify', 'success');
+            showToast(`💎 Забрал +${win}⭐ (×${mult.toFixed(2)})`);
+            pushGameHistory(`Сапёр +${win}⭐`, true);
+            renderMines();
+        }
+
+        function renderMines() {
+            const board = document.getElementById('minesBoard');
+            const startBtn = document.getElementById('minesStartBtn');
+            const cashBtn = document.getElementById('minesCashBtn');
+            const betChips = document.getElementById('minesBetChips');
+            const bombChips = document.getElementById('minesBombChips');
+            const info = document.getElementById('minesInfo');
+            if (!board || !startBtn) return;
+
+            betChips.innerHTML = betChipsHTML('minesSetBet', mines.bet);
+            bombChips.innerHTML = [3, 5, 10].map(n => {
+                const active = n === mines.bombsCount;
+                return `<button onclick="minesSetBombs(${n})" class="px-3 py-2 rounded-xl text-xs font-black border transition active:scale-95 ${active ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white border-rose-400 shadow-lg shadow-rose-500/20' : 'bg-slate-950/80 text-slate-300 border-slate-700 hover:border-slate-500'}">💣 ${n}</button>`;
+            }).join('');
+
+            const picks = mines.picked.length;
+            const curMult = picks ? minesMultiplier(picks, mines.bombsCount) : 1;
+
+            if (mines.round) {
+                info.innerHTML = `Открыто ${picks} · множитель <span class="text-amber-300 font-black">×${curMult.toFixed(2)}</span> → следующий ×${minesMultiplier(picks + 1, mines.bombsCount).toFixed(2)}`;
+            } else if (mines.dead) {
+                info.innerHTML = '<span class="text-rose-300 font-bold">Бум! Попробуй ещё раз 💣</span>';
+            } else {
+                info.innerHTML = 'Открывай плитки и забирай выигрыш до взрыва';
+            }
+
+            startBtn.classList.toggle('hidden', mines.round);
+            cashBtn.classList.toggle('hidden', !mines.round);
+            if (mines.round) {
+                cashBtn.innerText = picks ? `Забрать ${Math.round(mines.bet * curMult)}⭐` : 'Открой плитку';
+                cashBtn.disabled = picks === 0;
+                cashBtn.classList.toggle('opacity-40', picks === 0);
+            }
+            startBtn.innerText = `Поставить ${mines.bet}⭐`;
+
+            let html = '';
+            for (let i = 0; i < 25; i++) {
+                const isPicked = mines.picked.includes(i);
+                const isBomb = mines.bombs.includes(i);
+                let cls = 'aspect-square rounded-xl flex items-center justify-center border text-sm transition select-none ';
+                let icon = '';
+                if (isPicked) {
+                    cls += 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300';
+                    icon = '<i class="fa-solid fa-gem"></i>';
+                } else if (mines.dead && isBomb) {
+                    cls += 'bg-rose-500/20 border-rose-500/50 text-rose-300';
+                    icon = '<i class="fa-solid fa-bomb"></i>';
+                } else if (mines.round) {
+                    cls += 'bg-slate-900 border-slate-700 hover:border-amber-300 cursor-pointer active:scale-95';
+                } else {
+                    cls += 'bg-slate-950/60 border-slate-800 opacity-60';
+                }
+                const onclick = mines.round ? ` onclick="minesPick(${i})"` : '';
+                html += `<button${onclick} class="${cls}">${icon}</button>`;
+            }
+            board.innerHTML = html;
+        }
+
+        // ---- КРАШ ----
+        function crashSetBet(v) {
+            if (crash.round) { showToast('Ракета уже летит!'); return; }
+            crash.bet = v;
+            renderCrash();
+            haptic('select');
+        }
+
+        function crashStart() {
+            if (crash.round) return;
+            if (!takeBet(crash.bet)) return;
+            crash.round = true;
+            crash.showBoom = false;
+            const r = Math.random();
+            crash.crashAt = Math.max(1, Math.min(100, Math.floor((0.99 / (1 - r)) * 100) / 100));
+            crash.mult = 1;
+            crash.t0 = performance.now();
+            document.getElementById('crashHint').innerText = 'Забери до взрыва!';
+            getAudioContext();
+            haptic('impact', 'medium');
+
+            const loop = () => {
+                if (!crash.round) return;
+                const t = (performance.now() - crash.t0) / 1000;
+                crash.mult = Math.min(crash.crashAt, Math.pow(Math.E, 0.09 * t));
+                crashPaint();
+                if (crash.mult >= crash.crashAt) { crashBoom(); return; }
+                crash.raf = requestAnimationFrame(loop);
+            };
+            crash.raf = requestAnimationFrame(loop);
+            renderCrash();
+        }
+
+        function crashPaint() {
+            const m = crash.mult;
+            const el = document.getElementById('crashMult');
+            el.innerText = m.toFixed(2) + 'x';
+            el.className = 'text-5xl sm:text-6xl font-black tabular-nums ' + (m < 2 ? 'text-sky-300' : m < 5 ? 'text-emerald-300' : 'text-amber-300');
+
+            const rocket = document.getElementById('crashRocket');
+            rocket.style.left = (6 + Math.min(72, m * 7)) + '%';
+            rocket.style.bottom = (8 + Math.min(68, (m - 1) * 22)) + '%';
+
+            const glow = document.getElementById('crashGlow');
+            glow.style.background = `radial-gradient(circle at 50% 100%, ${m < 2 ? 'rgba(56,189,248,.35)' : m < 5 ? 'rgba(52,211,153,.35)' : 'rgba(251,191,36,.4)'}, transparent 65%)`;
+
+            const cashBtn = document.getElementById('crashCashBtn');
+            if (cashBtn && !cashBtn.classList.contains('hidden')) {
+                cashBtn.innerText = `Забрать ${Math.round(crash.bet * m)}⭐`;
+            }
+        }
+
+        function crashCash() {
+            if (!crash.round) return;
+            const m = crash.mult;
+            const win = Math.round(crash.bet * m);
+            crash.round = false;
+            cancelAnimationFrame(crash.raf);
+            wallet.coins += win;
+            updateWalletUI();
+            saveWallet();
+            playWinSound(m >= 3 ? 'classified' : 'consumer');
+            haptic('notify', 'success');
+            showToast(`🚀 Забрал +${win}⭐ (×${m.toFixed(2)})`);
+            pushGameHistory(`Краш +${win}⭐`, true);
+            renderCrash();
+        }
+
+        function crashBoom() {
+            crash.round = false;
+            cancelAnimationFrame(crash.raf);
+            const el = document.getElementById('crashMult');
+            el.innerText = '💥 ' + crash.crashAt.toFixed(2) + 'x';
+            el.className = 'text-5xl sm:text-6xl font-black tabular-nums text-rose-400';
+            const area = document.getElementById('crashArea');
+            area.classList.remove('crash-flash');
+            void area.offsetWidth;
+            area.classList.add('crash-flash');
+            playLoseSound();
+            haptic('notify', 'error');
+            showToast(`💥 Взрыв на ×${crash.crashAt.toFixed(2)} — ставка сгорела`);
+            pushGameHistory(`Краш -${crash.bet}⭐`, false);
+            crash.showBoom = true;
+            renderCrash();
+        }
+
+        function renderCrash() {
+            const betChips = document.getElementById('crashBetChips');
+            const startBtn = document.getElementById('crashStartBtn');
+            const cashBtn = document.getElementById('crashCashBtn');
+            const hint = document.getElementById('crashHint');
+            if (!betChips || !startBtn) return;
+
+            betChips.innerHTML = betChipsHTML('crashSetBet', crash.bet);
+            startBtn.classList.toggle('hidden', crash.round);
+            cashBtn.classList.toggle('hidden', !crash.round);
+            startBtn.innerText = `Поставить ${crash.bet}⭐`;
+
+            if (!crash.round) {
+                if (crash.showBoom) {
+                    crash.showBoom = false;
+                    hint.innerText = 'Взлетел! Попробуй ещё раз 💥';
+                } else {
+                    const el = document.getElementById('crashMult');
+                    el.innerText = '1.00x';
+                    el.className = 'text-5xl sm:text-6xl font-black tabular-nums text-sky-300';
+                    const rocket = document.getElementById('crashRocket');
+                    rocket.style.left = '6%';
+                    rocket.style.bottom = '8%';
+                    hint.innerText = 'Ставка растёт с каждой секундой — забери до взрыва! 🚀';
+                }
+            }
+        }
+
         // ==================== ВКЛАДКИ ====================
-        const TABS = ['cases', 'inventory', 'tap', 'stats', 'menu'];
+        const TABS = ['cases', 'inventory', 'games', 'tap', 'stats', 'menu'];
 
         function switchTab(name) {
             if (!TABS.includes(name)) return;
@@ -1443,6 +2237,7 @@
             if (name === 'inventory') renderInventory();
             if (name === 'stats') renderStats();
             if (name === 'tap') updateWalletUI();
+            if (name === 'games') renderGamesView();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             haptic('impact', 'light');
